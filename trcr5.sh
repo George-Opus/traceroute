@@ -23,9 +23,9 @@ host=$(host $addr | sed -n "1p" | awk '{printf $4}')
 
 # Les 3 commandes de découpage :
 
-	decoupage1=$(echo $UDP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
-	decoupage2=$(echo $TCP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
-	decoupage3=$(echo $ICMP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+	decoupage1=$(echo "$UDP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+	decoupage2=$(echo "$TCP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+	decoupage3=$(echo "$ICMP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
 
 	# cut -d" " -f 11,12,13 --> Ne prend que les champs 11, 12, 13, délimité par des espaces. Sous la forme : Bond;@IP;AS
 	# sed -r "s/ /;/g'" --> Remplace les espaces par des virgules pour toutes les lignes.
@@ -33,9 +33,9 @@ host=$(host $addr | sed -n "1p" | awk '{printf $4}')
 
 # Les 3 commande de comptage des étoiles :
 
-	count1=$(echo $decoupage1 | wc -m)
-	count2=$(echo $decoupage2 | wc -m)
-	count3=$(echo $decoupage3 | wc -m)
+	count1=$(echo "$decoupage1" | wc -m)
+	count2=$(echo "$decoupage2" | wc -m)
+	count3=$(echo "$decoupage3" | wc -m)
 
 	# wc -m --> Compte le nombre de caractère dans le résultat de la commande.  
 
@@ -48,31 +48,32 @@ let ttl++
 	UDP=$(traceroute -f $ttl -m $ttl -q 1 -n -U -A $addr)
 	TCP=$=$(traceroute -f $ttl -m $ttl -q 1 -n -T -A $addr)
 
-		decoupage1=$(echo $IUDP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
-        	decoupage2=$(echo $TCP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
-        	decoupage3=$(echo $ICMP | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+		decoupage1=$(echo "$UDP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+        	decoupage2=$(echo "$TCP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
+        	decoupage3=$(echo "$ICMP" | cut -d" " -f 11,12,13 | sed -r "s/ /;/g" | sed -r "s/;//4")
 
-		count1=$(echo $decoupage1 | wc -m)
-		count2=$(echo $decoupage2 | wc -m)
-		count3=$(echo $decoupage3 | wc -m)
-
+		count1=$(echo "$decoupage1" | wc -m)
+		count2=$(echo "$decoupage2" | wc -m)
+		count3=$(echo "$decoupage3" | wc -m)
+		echo "$decoupage1"
 			if [ "$count1" -lt "$min" ] # Si le résultat de count1 < 5 on change de protocole.
         			then echo "UDP"
                 			if [ "$count2" -lt "$min" ] # Si le résultat de count2 < 5 on change de protocole.
                         			then echo "TCP"
-                                			if [ "$count3" -lt "$smin" ]
+                                			if [ "$count3" -lt "$min" ]
                                         			then echo "ICMP"
-                                			else 	echo $deoupage3
-                                        				ttladdr=$(echo $ICMP | sed -r "s/^ //g" | awk -F " " '{print $12}')
+                                			else 	echo "$deoupage3"
+                                        				ttladdr=$(echo "$ICMP" | sed -r "s/^ //g" | awk -F " " '{print $12}')
                                 			fi
-                			else	echo $decoupage2
-              					ttladdr=$(echo $TCP | sed -r "s/^ //g" | awk -F " " '{print $12}')
+                			else	echo "$decoupage2"
+              					ttladdr=$(echo "$TCP" | sed -r "s/^ //g" | awk -F " " '{print $12}')
         				 fi
 
-			else echo $decoupage1
-        			ttladdr=$(echo $UDP | sed -r "s/^ //g" | awk -F " " '{print $12}')
+			else echo "$decoupage1"
+        			ttladdr=$(echo "$UDP" | sed -r "s/^ //g" | awk -F " " '{print $12}')
 
 			fi
 
 done
 exit 1
+
