@@ -1,5 +1,6 @@
 #!/bin/bash
 #zobiba
+#lalalilalala
 # Variables :
 
 ttl=0
