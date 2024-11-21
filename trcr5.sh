@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#zobiba
 # Variables :
 
 ttl=0
